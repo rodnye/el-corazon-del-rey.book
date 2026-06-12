@@ -1,0 +1,11 @@
+{
+  "plugins": ["@prettier/plugin-xml"],
+  "overrides": [
+    {
+      "files": ["*.opf", "*.ncx"],
+      "options": {
+        "parser": "xml"
+      }
+    }
+  ]
+}

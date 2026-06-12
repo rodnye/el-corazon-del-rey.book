@@ -1,0 +1,9 @@
+{
+  "packageManager": "pnpm@10.33.2",
+  "scripts": {
+    "format": "prettier --write ."
+  },
+  "dependencies": {
+    "@prettier/plugin-xml": "^3.4.2"
+  }
+}

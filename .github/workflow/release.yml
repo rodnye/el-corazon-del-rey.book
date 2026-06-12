@@ -1,0 +1,63 @@
+name: Build EPUB and Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.33.2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Create EPUB file
+        run: |
+          if [ -n "${{ github.ref_name }}" ] && [[ "${{ github.ref_name }}" == v* ]]; then
+            EPUB_NAME="el-corazon-del-rey-${{ github.ref_name }}.epub"
+          else
+            EPUB_NAME="el-corazon-del-rey-$(date +'%Y%m%d-%H%M%S').epub"
+          fi
+          echo "EPUB_NAME=$EPUB_NAME" >> $GITHUB_ENV
+
+          cd book
+
+          zip -0 -X "../$EPUB_NAME" mimetype
+          zip -9 -X -r "../$EPUB_NAME" META-INF OEBPS -x mimetype
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/v')
+        with:
+          files: ${{ env.EPUB_NAME }}
+          generate_release_notes: true
+          name: Release ${{ github.ref_name }}
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload artifact (for manual runs)
+        uses: actions/upload-artifact@v4
+        if: ${{ !startsWith(github.ref, 'refs/tags/v') }}
+        with:
+          name: epub-file
+          path: ${{ env.EPUB_NAME }}
+          retention-days: 30

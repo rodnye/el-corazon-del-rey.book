@@ -1,4 +1,4 @@
-# El corazón del Rey (Rey 3) 
+# El corazón del Rey (Rey 3)
 
 **Autora original:** Karine Bernal Lobo
 
@@ -15,6 +15,7 @@ Este flujo de trabajo utiliza [codepicker](https://github.com/rodnye/codepicker)
 ## Flujo de corrección
 
 1. Extraer el contenido de los capítulos a corregir:
+
    ```bash
    codepicker "book/OEBPS/chapter_{1..10}.xhtml" -cD
    ```
@@ -22,6 +23,7 @@ Este flujo de trabajo utiliza [codepicker](https://github.com/rodnye/codepicker)
 2. Pegar la salida en DeepSeek y pedirle que corrija la ortografía, respondiendo en formato **Codepick**.
 
 3. Aplicar las correcciones devueltas por DeepSeek:
+
    ```bash
    codepicker apply -c
    ```
